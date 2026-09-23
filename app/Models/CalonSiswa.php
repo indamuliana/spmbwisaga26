@@ -31,20 +31,40 @@ class CalonSiswa extends Model
         'tempat_lahir',
         'tanggal_lahir',
         'alamat_detail',
+        'rt',
+        'rw',
         'provinsi_id',
         'kota_kab_id',
         'kecamatan_id',
         'desa_id',
+        'anak_ke',
+        'dari_bersaudara',
         'nama_ayah',
+        'status_ayah',
+        'nik_ayah',
+        'tahun_lahir_ayah',
+        'pendidikan_ayah',
         'pekerjaan_ayah',
         'penghasilan_ayah',
         'nama_ibu',
+        'status_ibu',
+        'nik_ibu',
+        'tahun_lahir_ibu',
+        'pendidikan_ibu',
         'pekerjaan_ibu',
         'penghasilan_ibu',
         'jumlah_tanggungan',
         'hp_siswa',
         'hp_ayah',
         'hp_ibu',
+        'nama_wali',
+        'status_wali',
+        'nik_wali',
+        'tahun_lahir_wali',
+        'pendidikan_wali',
+        'pekerjaan_wali',
+        'penghasilan_wali',
+        'hp_wali',
         'bukti_bayar_seleksi',
         'catatan_bayar',
         'tanggal_transfer_seleksi',
@@ -86,7 +106,13 @@ class CalonSiswa extends Model
             'tanggal_lahir' => 'date',
             'penghasilan_ayah' => 'float',
             'penghasilan_ibu' => 'float',
+            'penghasilan_wali' => 'float',
             'jumlah_tanggungan' => 'integer',
+            'anak_ke' => 'integer',
+            'dari_bersaudara' => 'integer',
+            'tahun_lahir_ayah' => 'integer',
+            'tahun_lahir_ibu' => 'integer',
+            'tahun_lahir_wali' => 'integer',
             'nominal_kesanggupan_awal' => 'float',
             'tanggal_transfer_seleksi' => 'date',
             'nominal_transfer_seleksi' => 'float',
@@ -144,6 +170,13 @@ class CalonSiswa extends Model
     }
 
     protected function hpIbu(): Attribute
+    {
+        return Attribute::make(
+            set: fn (?string $value) => self::normalizePhoneNumber($value)
+        );
+    }
+
+    protected function hpWali(): Attribute
     {
         return Attribute::make(
             set: fn (?string $value) => self::normalizePhoneNumber($value)

@@ -694,7 +694,7 @@
                         {{-- Central Logo --}}
                         <div style="display:flex; align-items:center; justify-content:center; margin-bottom:24px;">
                             <div style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); border-radius:24px; padding:32px; backdrop-filter:blur(16px);">
-                                <img src="https://spmb.smkwikrama1garut.sch.id/SPMB-Biru.png" 
+                                <img src="https://smkwikrama1garut.sch.id/wp-content/uploads/2025/10/wikrama-logo-1.png" 
                                      alt="Logo SMK Wikrama 1 Garut" 
                                      style="width:140px; height:140px; object-fit:contain; filter:drop-shadow(0 0 30px rgba(99,102,241,0.5));">
                             </div>

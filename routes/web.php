@@ -130,7 +130,7 @@ Route::middleware(['auth', 'role:admin'])
         // Modul Master Data & Operasional PPDB
         Route::get('/users', \App\Livewire\Admin\ManajemenPengguna::class)->name('users');
         Route::get('/gelombang', fn () => 'Halaman Master Gelombang Pendaftaran')->name('gelombang');
-        Route::get('/jurusan', fn () => 'Halaman Master Jurusan / Peminatan')->name('jurusan');
+        Route::get('/jurusan', \App\Livewire\Admin\ManajemenJurusan::class)->name('jurusan');
         Route::get('/penugasan-wawancara', fn () => view('admin.penugasan-wawancara'))->name('penugasan-wawancara');
         Route::get('/laporan', fn () => 'Halaman Rekapitulasi Data PPDB')->name('laporan');
         Route::get('/pengumuman', \App\Livewire\Admin\KelolaPengumuman::class)->name('pengumuman');

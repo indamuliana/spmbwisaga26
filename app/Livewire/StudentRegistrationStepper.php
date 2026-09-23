@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Enums\StatusPendaftaran;
 use App\Enums\UserRole;
 use App\Models\CalonSiswa;
+use App\Models\Jurusan;
 use App\Models\KomponenBiaya;
 use App\Models\Program;
 use App\Models\User;
@@ -29,7 +30,8 @@ class StudentRegistrationStepper extends Component
     public string $detail_promotor = '';
     public string $hp_siswa = '';
 
-    // --- STEP 2: Pembayaran Seleksi ---
+    // --- STEP 3: Biodata Siswa & Wilayah ---
+    public ?int $jurusan_id = null;
     public $bukti_transfer = null;
     public string $catatan_bayar = '';
     public float $nominal_seleksi = 0;
@@ -37,6 +39,8 @@ class StudentRegistrationStepper extends Component
     // --- STEP 3: Biodata Siswa & Wilayah ---
     public string $nik_siswa = '';
     public string $no_kk = '';
+    public ?int $anak_ke = null;
+    public ?int $dari_bersaudara = null;
     public string $tempat_lahir = '';
     public string $tanggal_lahir = '';
     public string $jenis_kelamin = 'L';
@@ -46,6 +50,8 @@ class StudentRegistrationStepper extends Component
     public string $asal_sekolah = '';
     
     public string $alamat_detail = '';
+    public string $rt = '';
+    public string $rw = '';
     public ?int $provinsi_id = null;
     public ?int $kota_kab_id = null;
     public ?int $kecamatan_id = null;
@@ -68,13 +74,32 @@ class StudentRegistrationStepper extends Component
 
     // --- STEP 4: Biodata Orang Tua ---
     public string $nama_ayah = '';
+    public string $status_ayah = 'Hidup';
+    public string $nik_ayah = '';
+    public ?int $tahun_lahir_ayah = null;
+    public string $pendidikan_ayah = '';
     public string $pekerjaan_ayah = '';
     public $penghasilan_ayah = 0;
     public string $hp_ayah = '';
     public string $nama_ibu = '';
+    public string $status_ibu = 'Hidup';
+    public string $nik_ibu = '';
+    public ?int $tahun_lahir_ibu = null;
+    public string $pendidikan_ibu = '';
     public string $pekerjaan_ibu = '';
     public $penghasilan_ibu = 0;
     public string $hp_ibu = '';
+
+    // --- STEP 4: Data Wali (opsional) ---
+    public string $nama_wali = '';
+    public string $status_wali = 'Hidup';
+    public string $nik_wali = '';
+    public ?int $tahun_lahir_wali = null;
+    public string $pendidikan_wali = '';
+    public string $pekerjaan_wali = '';
+    public $penghasilan_wali = 0;
+    public string $hp_wali = '';
+
 
     // --- STEP 5: Akademik & Prestasi ---
     public array $subjects = [
@@ -123,9 +148,12 @@ class StudentRegistrationStepper extends Component
         $this->referensi_promotor = (string) $calon->referensi_promotor;
         $this->detail_promotor = (string) $calon->detail_promotor;
         $this->hp_siswa = (string) $calon->hp_siswa;
+        $this->jurusan_id = $calon->jurusan_id;
 
         $this->nik_siswa = (string) $calon->nik_siswa;
         $this->no_kk = (string) $calon->no_kk;
+        $this->anak_ke = $calon->anak_ke;
+        $this->dari_bersaudara = $calon->dari_bersaudara;
         $this->tempat_lahir = (string) $calon->tempat_lahir;
         $this->tanggal_lahir = $calon->tanggal_lahir ? $calon->tanggal_lahir->format('Y-m-d') : '';
         $this->jenis_kelamin = $calon->jenis_kelamin ?? 'L';
@@ -134,6 +162,8 @@ class StudentRegistrationStepper extends Component
         $this->asal_sekolah = (string) $calon->asal_sekolah;
         
         $this->alamat_detail = (string) $calon->alamat_detail;
+        $this->rt = (string) $calon->rt;
+        $this->rw = (string) $calon->rw;
         $this->provinsi_id = $calon->provinsi_id;
         $this->kota_kab_id = $calon->kota_kab_id;
         $this->kecamatan_id = $calon->kecamatan_id;
@@ -153,13 +183,31 @@ class StudentRegistrationStepper extends Component
         $this->cita_cita = (string) $calon->cita_cita;
 
         $this->nama_ayah = (string) $calon->nama_ayah;
+        $this->status_ayah = $calon->status_ayah ?? 'Hidup';
+        $this->nik_ayah = (string) $calon->nik_ayah;
+        $this->tahun_lahir_ayah = $calon->tahun_lahir_ayah;
+        $this->pendidikan_ayah = (string) $calon->pendidikan_ayah;
         $this->pekerjaan_ayah = (string) $calon->pekerjaan_ayah;
         $this->penghasilan_ayah = $calon->penghasilan_ayah ?? 0;
         $this->hp_ayah = (string) $calon->hp_ayah;
+
         $this->nama_ibu = (string) $calon->nama_ibu;
+        $this->status_ibu = $calon->status_ibu ?? 'Hidup';
+        $this->nik_ibu = (string) $calon->nik_ibu;
+        $this->tahun_lahir_ibu = $calon->tahun_lahir_ibu;
+        $this->pendidikan_ibu = (string) $calon->pendidikan_ibu;
         $this->pekerjaan_ibu = (string) $calon->pekerjaan_ibu;
         $this->penghasilan_ibu = $calon->penghasilan_ibu ?? 0;
         $this->hp_ibu = (string) $calon->hp_ibu;
+
+        $this->nama_wali = (string) $calon->nama_wali;
+        $this->status_wali = $calon->status_wali ?? 'Hidup';
+        $this->nik_wali = (string) $calon->nik_wali;
+        $this->tahun_lahir_wali = $calon->tahun_lahir_wali;
+        $this->pendidikan_wali = (string) $calon->pendidikan_wali;
+        $this->pekerjaan_wali = (string) $calon->pekerjaan_wali;
+        $this->penghasilan_wali = $calon->penghasilan_wali ?? 0;
+        $this->hp_wali = (string) $calon->hp_wali;
 
         if (! empty($calon->nilai_raport) && is_array($calon->nilai_raport)) {
             $this->nilai_raport = array_replace_recursive($this->nilai_raport, $calon->nilai_raport);
@@ -183,6 +231,7 @@ class StudentRegistrationStepper extends Component
             $this->isComplete = true;
         }
     }
+
 
     // --- STEP 1: Submit Registrasi Akun & Calon Siswa ---
     public function submitStep1(): void
@@ -297,8 +346,11 @@ class StudentRegistrationStepper extends Component
         $citaCitaFinal = $this->cita_cita === 'Lainnya' ? $this->cita_cita_lainnya : $this->cita_cita;
 
         $calon->update([
+            'jurusan_id' => $this->jurusan_id,
             'nik_siswa' => $this->nik_siswa,
             'no_kk' => $this->no_kk,
+            'anak_ke' => $this->anak_ke ?: null,
+            'dari_bersaudara' => $this->dari_bersaudara ?: null,
             'tempat_lahir' => $this->tempat_lahir,
             'tanggal_lahir' => $this->tanggal_lahir ?: null,
             'jenis_kelamin' => $this->jenis_kelamin,
@@ -306,6 +358,8 @@ class StudentRegistrationStepper extends Component
             'agama' => $this->agama,
             'asal_sekolah' => $this->asal_sekolah,
             'alamat_detail' => $this->alamat_detail,
+            'rt' => $this->rt ?: null,
+            'rw' => $this->rw ?: null,
             'provinsi_id' => $this->provinsi_id,
             'kota_kab_id' => $this->kota_kab_id,
             'kecamatan_id' => $this->kecamatan_id,
@@ -331,8 +385,11 @@ class StudentRegistrationStepper extends Component
         $calon = Auth::user()->calonSiswa;
 
         $this->validate([
+            'jurusan_id' => ['required', 'exists:jurusan,id'],
             'nik_siswa' => ['required', 'numeric', 'digits:16', 'unique:calon_siswa,nik_siswa,' . $calon?->id],
             'no_kk' => ['required', 'numeric', 'digits:16'],
+            'anak_ke' => ['nullable', 'integer', 'min:1', 'max:20'],
+            'dari_bersaudara' => ['nullable', 'integer', 'min:1', 'max:20'],
             'tempat_lahir' => ['required', 'string', 'max:100'],
             'tanggal_lahir' => ['required', 'date', 'before:today'],
             'jenis_kelamin' => ['required', 'in:L,P'],
@@ -340,6 +397,8 @@ class StudentRegistrationStepper extends Component
             'agama' => ['required', 'in:Islam'],
             'asal_sekolah' => ['required', 'string', 'max:150'],
             'alamat_detail' => ['required', 'string', 'max:255'],
+            'rt' => ['nullable', 'string', 'max:3'],
+            'rw' => ['nullable', 'string', 'max:3'],
             'provinsi_id' => ['nullable', 'exists:wilayah,id'],
             'kota_kab_id' => ['nullable', 'exists:wilayah,id'],
             'kecamatan_id' => ['nullable', 'exists:wilayah,id'],
@@ -355,14 +414,17 @@ class StudentRegistrationStepper extends Component
             'hobi' => ['required', 'string'],
             'cita_cita' => ['required', 'string'],
         ], [
+            'jurusan_id.required' => 'Pilihan jurusan wajib diisi.',
             'nik_siswa.required' => 'NIK Siswa sesuai Kartu Keluarga (KK) wajib diisi.',
             'nik_siswa.digits' => 'NIK harus berjumlah tepat 16 digit.',
             'no_kk.required' => 'Nomor Kartu Keluarga (KK) wajib diisi.',
             'no_kk.digits' => 'Nomor KK harus berjumlah tepat 16 digit.',
+            'anak_ke.integer' => 'Anak ke- harus berupa angka.',
+            'dari_bersaudara.integer' => 'Jumlah saudara harus berupa angka.',
             'tempat_lahir.required' => 'Kota/tempat lahir wajib diisi.',
             'tanggal_lahir.required' => 'Tanggal lahir wajib diisi.',
             'asal_sekolah.required' => 'Nama sekolah asal (SMP/MTs) wajib diisi.',
-            'alamat_detail.required' => 'Alamat lengkap jalan/RT/RW wajib diisi.',
+            'alamat_detail.required' => 'Alamat lengkap jalan wajib diisi.',
             'kode_pos.required' => 'Kode pos wajib diisi.',
             'kode_pos.digits' => 'Kode pos harus berupa 5 digit angka.',
             'status_tempat_tinggal.required' => 'Status tempat tinggal wajib diisi.',
@@ -377,8 +439,11 @@ class StudentRegistrationStepper extends Component
         $citaCitaFinal = $this->cita_cita === 'Lainnya' ? $this->cita_cita_lainnya : $this->cita_cita;
 
         $calon->update([
+            'jurusan_id' => $this->jurusan_id,
             'nik_siswa' => $this->nik_siswa,
             'no_kk' => $this->no_kk,
+            'anak_ke' => $this->anak_ke ?: null,
+            'dari_bersaudara' => $this->dari_bersaudara ?: null,
             'tempat_lahir' => $this->tempat_lahir,
             'tanggal_lahir' => $this->tanggal_lahir,
             'jenis_kelamin' => $this->jenis_kelamin,
@@ -386,6 +451,8 @@ class StudentRegistrationStepper extends Component
             'agama' => $this->agama,
             'asal_sekolah' => $this->asal_sekolah,
             'alamat_detail' => $this->alamat_detail,
+            'rt' => $this->rt ?: null,
+            'rw' => $this->rw ?: null,
             'provinsi_id' => $this->provinsi_id,
             'kota_kab_id' => $this->kota_kab_id,
             'kecamatan_id' => $this->kecamatan_id,
@@ -412,31 +479,67 @@ class StudentRegistrationStepper extends Component
     {
         $this->validate([
             'nama_ayah' => ['required', 'string', 'max:150'],
+            'status_ayah' => ['required', 'in:Hidup,Wafat'],
+            'nik_ayah' => ['nullable', 'numeric', 'digits:16'],
+            'tahun_lahir_ayah' => ['nullable', 'integer', 'min:1930', 'max:' . (date('Y') - 15)],
+            'pendidikan_ayah' => ['nullable', 'string', 'max:50'],
             'pekerjaan_ayah' => ['required', 'string', 'max:100'],
             'penghasilan_ayah' => ['required', 'numeric', 'min:0'],
             'hp_ayah' => ['nullable', 'string', 'max:20'],
             'nama_ibu' => ['required', 'string', 'max:150'],
+            'status_ibu' => ['required', 'in:Hidup,Wafat'],
+            'nik_ibu' => ['nullable', 'numeric', 'digits:16'],
+            'tahun_lahir_ibu' => ['nullable', 'integer', 'min:1930', 'max:' . (date('Y') - 15)],
+            'pendidikan_ibu' => ['nullable', 'string', 'max:50'],
             'pekerjaan_ibu' => ['required', 'string', 'max:100'],
             'penghasilan_ibu' => ['required', 'numeric', 'min:0'],
             'hp_ibu' => ['nullable', 'string', 'max:20'],
+            // Wali bersifat opsional — hanya divalidasi jika nama wali diisi
+            'nama_wali' => ['nullable', 'string', 'max:150'],
+            'status_wali' => ['nullable', 'in:Hidup,Wafat'],
+            'nik_wali' => ['nullable', 'numeric', 'digits:16'],
+            'tahun_lahir_wali' => ['nullable', 'integer', 'min:1930', 'max:' . (date('Y') - 15)],
+            'pendidikan_wali' => ['nullable', 'string', 'max:50'],
+            'pekerjaan_wali' => ['nullable', 'string', 'max:100'],
+            'penghasilan_wali' => ['nullable', 'numeric', 'min:0'],
+            'hp_wali' => ['nullable', 'string', 'max:20'],
         ], [
-            'nama_ayah.required' => 'Nama lengkap ayah kandung/wali wajib diisi.',
+            'nama_ayah.required' => 'Nama lengkap ayah kandung wajib diisi.',
             'pekerjaan_ayah.required' => 'Pekerjaan ayah wajib dipilih/diisi.',
+            'nik_ayah.digits' => 'NIK Ayah harus 16 digit.',
             'nama_ibu.required' => 'Nama lengkap ibu kandung wajib diisi.',
             'pekerjaan_ibu.required' => 'Pekerjaan ibu wajib dipilih/diisi.',
+            'nik_ibu.digits' => 'NIK Ibu harus 16 digit.',
+            'nik_wali.digits' => 'NIK Wali harus 16 digit.',
         ]);
 
         $calon = Auth::user()->calonSiswa;
 
         $calon->update([
             'nama_ayah' => $this->nama_ayah,
+            'status_ayah' => $this->status_ayah,
+            'nik_ayah' => $this->nik_ayah ?: null,
+            'tahun_lahir_ayah' => $this->tahun_lahir_ayah ?: null,
+            'pendidikan_ayah' => $this->pendidikan_ayah ?: null,
             'pekerjaan_ayah' => $this->pekerjaan_ayah,
             'penghasilan_ayah' => $this->penghasilan_ayah,
-            'hp_ayah' => $this->hp_ayah,
+            'hp_ayah' => $this->hp_ayah ?: null,
             'nama_ibu' => $this->nama_ibu,
+            'status_ibu' => $this->status_ibu,
+            'nik_ibu' => $this->nik_ibu ?: null,
+            'tahun_lahir_ibu' => $this->tahun_lahir_ibu ?: null,
+            'pendidikan_ibu' => $this->pendidikan_ibu ?: null,
             'pekerjaan_ibu' => $this->pekerjaan_ibu,
             'penghasilan_ibu' => $this->penghasilan_ibu,
-            'hp_ibu' => $this->hp_ibu,
+            'hp_ibu' => $this->hp_ibu ?: null,
+            'nama_wali' => $this->nama_wali ?: null,
+            'status_wali' => $this->nama_wali ? ($this->status_wali ?: 'Hidup') : null,
+            'nik_wali' => $this->nik_wali ?: null,
+            'tahun_lahir_wali' => $this->tahun_lahir_wali ?: null,
+            'pendidikan_wali' => $this->pendidikan_wali ?: null,
+            'pekerjaan_wali' => $this->pekerjaan_wali ?: null,
+            'penghasilan_wali' => $this->nama_wali ? ($this->penghasilan_wali ?? 0) : null,
+            'hp_wali' => $this->hp_wali ?: null,
             'status_pendaftaran' => StatusPendaftaran::ISI_RAPORT,
         ]);
 
@@ -527,18 +630,67 @@ class StudentRegistrationStepper extends Component
         }
     }
 
+    // ==========================================
+    // CASCADING WILAYAH — LIVEWIRE AJAX
+    // ==========================================
+
+    /**
+     * Reset level bawah saat provinsi berubah.
+     */
+    public function updatedProvinsiId(): void
+    {
+        $this->kota_kab_id  = null;
+        $this->kecamatan_id = null;
+        $this->desa_id      = null;
+    }
+
+    /**
+     * Reset level bawah saat kab/kota berubah.
+     */
+    public function updatedKotaKabId(): void
+    {
+        $this->kecamatan_id = null;
+        $this->desa_id      = null;
+    }
+
+    /**
+     * Reset desa saat kecamatan berubah.
+     */
+    public function updatedKecamatanId(): void
+    {
+        $this->desa_id = null;
+    }
+
     public function render()
     {
         $programs = Program::active()->get();
+        $jurusans = Jurusan::active()->get();
 
-        // Wilayah hierarki lengkap untuk Alpine.js cascading
-        $wilayahTree = Wilayah::provinsi()
-            ->with(['children.children.children'])
-            ->get();
+        // Provinsi dimuat semuanya (hanya 38 record — ringan)
+        $provinsiList = Wilayah::provinsi()->orderBy('nama')->get(['id', 'nama']);
+
+        // Kab/Kota: hanya jika provinsi sudah dipilih
+        $kotaKabList = $this->provinsi_id
+            ? Wilayah::filterKotaKab($this->provinsi_id)->orderBy('nama')->get(['id', 'nama'])
+            : collect();
+
+        // Kecamatan: hanya jika kab/kota sudah dipilih
+        $kecamatanList = $this->kota_kab_id
+            ? Wilayah::filterKecamatan($this->kota_kab_id)->orderBy('nama')->get(['id', 'nama'])
+            : collect();
+
+        // Desa/Kelurahan: hanya jika kecamatan sudah dipilih
+        $desaList = $this->kecamatan_id
+            ? Wilayah::filterDesa($this->kecamatan_id)->orderBy('nama')->get(['id', 'nama'])
+            : collect();
 
         return view('livewire.student-registration-stepper', [
-            'programs' => $programs,
-            'wilayahTree' => $wilayahTree,
+            'programs'      => $programs,
+            'jurusans'      => $jurusans,
+            'provinsiList'  => $provinsiList,
+            'kotaKabList'   => $kotaKabList,
+            'kecamatanList' => $kecamatanList,
+            'desaList'      => $desaList,
         ]);
     }
 }

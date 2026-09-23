@@ -291,6 +291,29 @@
             </div>
 
             <form wire:submit.prevent="submitStep3" class="space-y-6">
+                <!-- Pilihan Akademik -->
+                <div class="p-5 rounded-2xl bg-indigo-50/50 border border-indigo-100 space-y-4">
+                    <h3 class="text-xs font-bold text-indigo-800 uppercase tracking-wider flex items-center space-x-1.5">
+                        <span class="w-2 h-2 rounded-full bg-indigo-600"></span>
+                        <span>Pilihan Akademik</span>
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="sm:col-span-2">
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
+                                Pilihan Jurusan / Peminatan <span class="text-rose-500">*</span>
+                            </label>
+                            <select wire:model.defer="jurusan_id" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 bg-white @error('jurusan_id') border-rose-500 @enderror">
+                                <option value="">-- Pilih Jurusan --</option>
+                                @foreach($jurusans as $jurusan)
+                                    <option value="{{ $jurusan->id }}">{{ $jurusan->nama_jurusan }} ({{ $jurusan->kode_jurusan }})</option>
+                                @endforeach
+                            </select>
+                            @error('jurusan_id') <p class="text-xs text-rose-600 mt-1">{{ $message }}</p> @enderror
+                        </div>
+                    </div>
+                </div>
+
                 <!-- A. Data Kependudukan & Kelahiran -->
                 <div class="p-5 rounded-2xl bg-slate-50/70 border border-slate-200 space-y-4">
                     <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center space-x-1.5">
@@ -362,6 +385,22 @@
                             <input type="text" wire:model.defer="asal_sekolah" placeholder="Nama sekolah asal" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 @error('asal_sekolah') border-rose-500 @enderror">
                             @error('asal_sekolah') <p class="text-xs text-rose-600 mt-1">{{ $message }}</p> @enderror
                         </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Anak Ke- (dalam KK)</label>
+                            <input type="number" wire:model.defer="anak_ke" min="1" max="20" placeholder="Contoh: 2"
+                                   class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 bg-white @error('anak_ke') border-rose-500 @enderror">
+                            @error('anak_ke') <p class="text-xs text-rose-600 mt-1">{{ $message }}</p> @enderror
+                            <p class="text-[11px] text-slate-400 mt-1">Sesuai urutan dalam Kartu Keluarga.</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Dari Berapa Bersaudara</label>
+                            <input type="number" wire:model.defer="dari_bersaudara" min="1" max="20" placeholder="Contoh: 3"
+                                   class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 bg-white @error('dari_bersaudara') border-rose-500 @enderror">
+                            @error('dari_bersaudara') <p class="text-xs text-rose-600 mt-1">{{ $message }}</p> @enderror
+                            <p class="text-[11px] text-slate-400 mt-1">Jumlah total saudara kandung.</p>
+                        </div>
                     </div>
                 </div>
 
@@ -375,51 +414,114 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div class="sm:col-span-2">
                             <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Alamat Lengkap <span class="text-rose-500">*</span></label>
-                            <textarea wire:model.defer="alamat_detail" rows="2" placeholder="Nama Jalan, No. Rumah, RT/RW, Dusun" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 @error('alamat_detail') border-rose-500 @enderror"></textarea>
+                            <textarea wire:model.defer="alamat_detail" rows="2" placeholder="Nama Jalan, No. Rumah, Dusun" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 @error('alamat_detail') border-rose-500 @enderror"></textarea>
                             @error('alamat_detail') <p class="text-xs text-rose-600 mt-1">{{ $message }}</p> @enderror
                         </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">RT</label>
+                            <input type="text" wire:model.defer="rt" maxlength="3" placeholder="Contoh: 001"
+                                   class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 bg-white @error('rt') border-rose-500 @enderror">
+                            @error('rt') <p class="text-xs text-rose-600 mt-1">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">RW</label>
+                            <input type="text" wire:model.defer="rw" maxlength="3" placeholder="Contoh: 002"
+                                   class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 bg-white @error('rw') border-rose-500 @enderror">
+                            @error('rw') <p class="text-xs text-rose-600 mt-1">{{ $message }}</p> @enderror
+                        </div>
                         
-                        <div class="sm:col-span-2" x-data="wilayahSelect({{ $wilayahTree }})" x-init="initData()">
+                        <div class="sm:col-span-2">
                             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4 bg-white border border-slate-200 rounded-xl shadow-xs">
+
+                                {{-- PROVINSI --}}
                                 <div>
                                     <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Provinsi</label>
-                                    <select x-model="selectedProv" x-on:change="onProvChange()" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-indigo-500 bg-white">
-                                        <option value="">-- Pilih Provinsi --</option>
-                                        <template x-for="prov in provTree" :key="prov.id">
-                                            <option :value="prov.id" x-text="prov.nama" :selected="prov.id == selectedProv"></option>
-                                        </template>
-                                    </select>
+                                    <div class="relative">
+                                        <select wire:model.live="provinsi_id"
+                                                class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-indigo-500 bg-white @error('provinsi_id') border-rose-500 @enderror">
+                                            <option value="">-- Pilih Provinsi --</option>
+                                            @foreach($provinsiList as $prov)
+                                                <option value="{{ $prov->id }}">{{ $prov->nama }}</option>
+                                            @endforeach
+                                        </select>
+                                        <div wire:loading wire:target="updatedProvinsiId" class="absolute inset-y-0 right-6 flex items-center pr-1">
+                                            <svg class="w-3 h-3 animate-spin text-indigo-500" fill="none" viewBox="0 0 24 24">
+                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    @error('provinsi_id') <p class="text-[10px] text-rose-600 mt-1">{{ $message }}</p> @enderror
                                 </div>
-                                
+
+                                {{-- KAB/KOTA --}}
                                 <div>
                                     <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Kab / Kota</label>
-                                    <select x-model="selectedKab" x-on:change="onCityChange()" :disabled="availableCities.length === 0" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-indigo-500 bg-white disabled:bg-slate-100">
-                                        <option value="">-- Pilih Kab/Kota --</option>
-                                        <template x-for="kab in availableCities" :key="kab.id">
-                                            <option :value="kab.id" x-text="kab.nama" :selected="kab.id == selectedKab"></option>
-                                        </template>
-                                    </select>
+                                    <div class="relative">
+                                        <select wire:model.live="kota_kab_id"
+                                                @disabled(!$provinsi_id)
+                                                class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-indigo-500 bg-white disabled:bg-slate-100 disabled:text-slate-400 @error('kota_kab_id') border-rose-500 @enderror">
+                                            <option value="">{{ $provinsi_id ? '-- Pilih Kab/Kota --' : '-- Pilih Provinsi dulu --' }}</option>
+                                            @foreach($kotaKabList as $kab)
+                                                <option value="{{ $kab->id }}">{{ $kab->nama }}</option>
+                                            @endforeach
+                                        </select>
+                                        <div wire:loading wire:target="updatedKotaKabId" class="absolute inset-y-0 right-6 flex items-center pr-1">
+                                            <svg class="w-3 h-3 animate-spin text-indigo-500" fill="none" viewBox="0 0 24 24">
+                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    @error('kota_kab_id') <p class="text-[10px] text-rose-600 mt-1">{{ $message }}</p> @enderror
                                 </div>
-                                
+
+                                {{-- KECAMATAN --}}
                                 <div>
                                     <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Kecamatan</label>
-                                    <select x-model="selectedKec" x-on:change="onDistrictChange()" :disabled="availableDistricts.length === 0" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-indigo-500 bg-white disabled:bg-slate-100">
-                                        <option value="">-- Pilih Kecamatan --</option>
-                                        <template x-for="kec in availableDistricts" :key="kec.id">
-                                            <option :value="kec.id" x-text="kec.nama" :selected="kec.id == selectedKec"></option>
-                                        </template>
-                                    </select>
+                                    <div class="relative">
+                                        <select wire:model.live="kecamatan_id"
+                                                @disabled(!$kota_kab_id)
+                                                class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-indigo-500 bg-white disabled:bg-slate-100 disabled:text-slate-400 @error('kecamatan_id') border-rose-500 @enderror">
+                                            <option value="">{{ $kota_kab_id ? '-- Pilih Kecamatan --' : '-- Pilih Kab/Kota dulu --' }}</option>
+                                            @foreach($kecamatanList as $kec)
+                                                <option value="{{ $kec->id }}">{{ $kec->nama }}</option>
+                                            @endforeach
+                                        </select>
+                                        <div wire:loading wire:target="updatedKecamatanId" class="absolute inset-y-0 right-6 flex items-center pr-1">
+                                            <svg class="w-3 h-3 animate-spin text-indigo-500" fill="none" viewBox="0 0 24 24">
+                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    @error('kecamatan_id') <p class="text-[10px] text-rose-600 mt-1">{{ $message }}</p> @enderror
                                 </div>
-                                
+
+                                {{-- DESA / KELURAHAN --}}
                                 <div>
                                     <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Desa / Kelurahan</label>
-                                    <select x-model="selectedDesa" x-on:change="onVillageChange()" :disabled="availableVillages.length === 0" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-indigo-500 bg-white disabled:bg-slate-100">
-                                        <option value="">-- Pilih Desa/Kelurahan --</option>
-                                        <template x-for="desa in availableVillages" :key="desa.id">
-                                            <option :value="desa.id" x-text="desa.nama" :selected="desa.id == selectedDesa"></option>
-                                        </template>
-                                    </select>
+                                    <div class="relative">
+                                        <select wire:model.live="desa_id"
+                                                @disabled(!$kecamatan_id)
+                                                class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-indigo-500 bg-white disabled:bg-slate-100 disabled:text-slate-400 @error('desa_id') border-rose-500 @enderror">
+                                            <option value="">{{ $kecamatan_id ? '-- Pilih Desa/Kelurahan --' : '-- Pilih Kecamatan dulu --' }}</option>
+                                            @foreach($desaList as $desa)
+                                                <option value="{{ $desa->id }}">{{ $desa->nama }}</option>
+                                            @endforeach
+                                        </select>
+                                        <div wire:loading wire:target="updatedDesaId" class="absolute inset-y-0 right-6 flex items-center pr-1">
+                                            <svg class="w-3 h-3 animate-spin text-indigo-500" fill="none" viewBox="0 0 24 24">
+                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    @error('desa_id') <p class="text-[10px] text-rose-600 mt-1">{{ $message }}</p> @enderror
                                 </div>
+
                             </div>
                         </div>
 
@@ -436,7 +538,10 @@
                                 <option value="Bersama Orangtua">Bersama Orangtua</option>
                                 <option value="Wali">Wali</option>
                                 <option value="Asrama">Asrama</option>
+                                <option value="Pesantren">Pesantren</option>
+                                <option value="Panti Asuhan">Panti Asuhan</option>
                                 <option value="Kos">Kos</option>
+                                <option value="Lainnya">Lainnya</option>
                             </select>
                             @error('status_tempat_tinggal') <p class="text-xs text-rose-600 mt-1">{{ $message }}</p> @enderror
                         </div>
@@ -512,11 +617,34 @@
                                 <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Hobi <span class="text-rose-500">*</span></label>
                                 <select x-model="hobiMode" wire:model="hobi" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 mb-2 @error('hobi') border-rose-500 @enderror">
                                     <option value="">-- Pilih Hobi --</option>
-                                    <option value="Membaca">Membaca</option>
-                                    <option value="Olahraga">Olahraga</option>
-                                    <option value="Kesenian">Kesenian</option>
-                                    <option value="Menulis">Menulis</option>
+                                    <option value="Belanja">Belanja</option>
+                                    <option value="Berkemah">Berkemah</option>
+                                    <option value="Berlari">Berlari</option>
+                                    <option value="Bermain biola">Bermain biola</option>
+                                    <option value="Bermain bola">Bermain bola</option>
+                                    <option value="Bermain bola tenis">Bermain bola tenis</option>
+                                    <option value="Bermain boneka">Bermain boneka</option>
+                                    <option value="bermain bulu tangkis">Bermain bulu tangkis</option>
+                                    <option value="Bermain gitar">Bermain gitar</option>
+                                    <option value="bermain musik">bermain musik</option>
+                                    <option value="bermain piano">bermain piano</option>
+                                    <option value="Berselancar">Berselancar</option>
+                                    <option value="Fitness">Fitness</option>
+                                    <option value="Fotografi">Fotografi</option>
+                                    <option value="jogging">jogging</option>
+                                    <option value="kesenian">kesenian</option>
                                     <option value="Lainnya">Lainnya</option>
+                                    <option value="Main Puzzle">Main Puzzle</option>
+                                    <option value="Makan">Makan</option>
+                                    <option value="memancing">memancing</option>
+                                    <option value="membaca">membaca</option>
+                                    <option value="mendaki">mendaki</option>
+                                    <option value="menggambar">menggambar</option>
+                                    <option value="menjahit">menjahit</option>
+                                    <option value="menulis">menulis</option>
+                                    <option value="mewarnai">mewarnai</option>
+                                    <option value="olahraga">olahraga</option>
+                                    <option value="traveling">traveling</option>
                                 </select>
                                 <div x-show="hobiMode === 'Lainnya'">
                                     <input type="text" wire:model.defer="hobi_lainnya" placeholder="Sebutkan hobi lainnya" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500">
@@ -531,8 +659,44 @@
                                 <select x-model="citaCitaMode" wire:model="cita_cita" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 mb-2 @error('cita_cita') border-rose-500 @enderror">
                                     <option value="">-- Pilih Cita-Cita --</option>
                                     <option value="PNS / TNI / POLRI">PNS / TNI / POLRI</option>
+                                    <option value="Arsitek">Arsitek</option>
+                                    <option value="Astronot">Astronot</option>
+                                    <option value="Atlet">Atlet</option>
+                                    <option value="Atlet E-sport">Atlet E-sport</option>
+                                    <option value="Atlet olahraga">Atlet olahraga</option>
+                                    <option value="Bidan">Bidan</option>
+                                    <option value="Konten kreator">Konten kreator</option>
+                                    <option value="Dai/Ustad">Dai/Ustad</option>
+                                    <option value="Desainer">Desainer</option>
                                     <option value="Dokter">Dokter</option>
-                                    <option value="Pengusaha">Pengusaha</option>
+                                    <option value="Entertainer/Pekerja seni">Entertainer/Pekerja seni</option>
+                                    <option value="Guru/Dosen">Guru/Dosen</option>
+                                    <option value="Koki">Koki</option>
+                                    <option value="Lainnya">Lainnya</option>
+                                    <option value="Masinis kereta Api">Masinis kereta Api</option>
+                                    <option value="Pegawai Negeri Sipil/PNS">Pegawai Negeri Sipil/PNS</option>
+                                    <option value="Pelaut">Pelaut</option>
+                                    <option value="Pemadam kebakaran">Pemadam kebakaran</option>
+                                    <option value="Pembalap">Pembalap</option>
+                                    <option value="Pembawa acara/MC">Pembawa acara/MC</option>
+                                    <option value="Pendeta">Pendeta</option>
+                                    <option value="Pengacara">Pengacara</option>
+                                    <option value="Penghafal Alquran">Penghafal Alquran</option>
+                                    <option value="Pengusaha/Bussinessman">Pengusaha/Bussinessman</option>
+                                    <option value="Penulis">Penulis</option>
+                                    <option value="Penyiar radio">Penyiar radio</option>
+                                    <option value="Perawat">Perawat</option>
+                                    <option value="Perawat/suster">Perawat/suster</option>
+                                    <option value="Pilot">Pilot</option>
+                                    <option value="Polisi">Polisi</option>
+                                    <option value="Politikus">Politikus</option>
+                                    <option value="Presiden">Presiden</option>
+                                    <option value="Seni/lukis/artis/sejenis">Seni/lukis/artis/sejenis</option>
+                                    <option value="Tentara">Tentara</option>
+                                    <option value="Penerjemah">Penerjemah</option>
+                                    <option value="Vlogger">Vlogger</option>
+                                    <option value="Wartawan">Wartawan</option>
+                                    <option value="Wiraswasta">Wiraswasta</option>
                                     <option value="Programmer / IT">Programmer / IT</option>
                                     <option value="Lainnya">Lainnya</option>
                                 </select>
@@ -602,18 +766,153 @@
 
                         <div>
                             <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
+                                Status Ayah <span class="text-rose-500">*</span>
+                            </label>
+                            <div class="flex items-center space-x-6 mt-2">
+                                <label class="inline-flex items-center cursor-pointer">
+                                    <input type="radio" wire:model.defer="status_ayah" value="Hidup" class="w-4 h-4 text-indigo-600 border-slate-300 focus:ring-indigo-500">
+                                    <span class="ml-2 text-sm text-slate-700">Masih Hidup</span>
+                                </label>
+                                <label class="inline-flex items-center cursor-pointer">
+                                    <input type="radio" wire:model.defer="status_ayah" value="Wafat" class="w-4 h-4 text-rose-500 border-slate-300 focus:ring-rose-500">
+                                    <span class="ml-2 text-sm text-slate-700">Wafat</span>
+                                </label>
+                            </div>
+                            @error('status_ayah') <p class="text-xs text-rose-600 mt-1">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
+                                NIK Ayah (16 Digit)
+                            </label>
+                            <input type="text" wire:model.defer="nik_ayah" maxlength="16" placeholder="Sesuai KTP Ayah"
+                                   class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 bg-white @error('nik_ayah') border-rose-500 @enderror">
+                            @error('nik_ayah') <p class="text-xs text-rose-600 mt-1">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
+                                Tahun Lahir Ayah
+                            </label>
+                            <input type="number" wire:model.defer="tahun_lahir_ayah" min="1930" max="{{ date('Y') - 15 }}" placeholder="Contoh: 1975"
+                                   class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 bg-white @error('tahun_lahir_ayah') border-rose-500 @enderror">
+                            @error('tahun_lahir_ayah') <p class="text-xs text-rose-600 mt-1">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
+                                Pendidikan Terakhir Ayah
+                            </label>
+                            <select wire:model.defer="pendidikan_ayah"
+                                    class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 bg-white @error('pendidikan_ayah') border-rose-500 @enderror">
+                                <option value="">-- Pilih Pendidikan --</option>
+                                <option value="Tidak Sekolah">Tidak Sekolah</option>
+                                <option value="SD/MI">SD / MI</option>
+                                <option value="SMP/MTs">SMP / MTs</option>
+                                <option value="SMA/MA/SMK">SMA / MA / SMK</option>
+                                <option value="D1/D2/D3">D1 / D2 / D3</option>
+                                <option value="S1/D4">S1 / D4</option>
+                                <option value="S2">S2</option>
+                                <option value="S3">S3</option>
+                            </select>
+                            @error('pendidikan_ayah') <p class="text-xs text-rose-600 mt-1">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
                                 Pekerjaan Ayah <span class="text-rose-500">*</span>
                             </label>
                             <select wire:model.defer="pekerjaan_ayah"
                                     class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 bg-white @error('pekerjaan_ayah') border-rose-500 @enderror">
                                 <option value="">-- Pilih Pekerjaan --</option>
-                                <option value="PNS / TNI / POLRI">PNS / TNI / POLRI</option>
-                                <option value="Karyawan Swasta">Karyawan Swasta</option>
-                                <option value="Wiraswasta / Pengusaha">Wiraswasta / Pengusaha</option>
-                                <option value="Petani / Nelayan / Buruh">Petani / Nelayan / Buruh</option>
-                                <option value="Pedagang">Pedagang</option>
-                                <option value="Pensiunan">Pensiunan</option>
-                                <option value="Lainnya">Lainnya</option>
+                                <option value="BELUM/TIDAK BEKERJA">BELUM/TIDAK BEKERJA</option>
+                                <option value="MENGURUS RUMAH TANGGA">MENGURUS RUMAH TANGGA</option>
+                                <option value="PELAJAR/MAHASISWA">PELAJAR/MAHASISWA</option>
+                                <option value="PENSIUNAN">PENSIUNAN</option>
+                                <option value="PEGAWAI NEGERI SIPIL (PNS)">PEGAWAI NEGERI SIPIL (PNS)</option>
+                                <option value="TENTARA NASIONAL INDONESIA (TNI)">TENTARA NASIONAL INDONESIA (TNI)</option>
+                                <option value="KEPOLISIAN RI (POLRI)">KEPOLISIAN RI (POLRI)</option>
+                                <option value="PERDAGANGAN">PERDAGANGAN</option>
+                                <option value="PETANI/PERKEBUNAN">PETANI/PERKEBUNAN</option>
+                                <option value="PETERNAK">PETERNAK</option>
+                                <option value="NELAYAN/PERIKANAN">NELAYAN/PERIKANAN</option>
+                                <option value="INDUSTRI">INDUSTRI</option>
+                                <option value="KONSTRUKSI">KONSTRUKSI</option>
+                                <option value="TRANSPORTASI">TRANSPORTASI</option>
+                                <option value="KARYAWAN SWASTA">KARYAWAN SWASTA</option>
+                                <option value="KARYAWAN BUMN">KARYAWAN BUMN</option>
+                                <option value="KARYAWAN BUMD">KARYAWAN BUMD</option>
+                                <option value="KARYAWAN HONORER">KARYAWAN HONORER</option>
+                                <option value="BURUH HARIAN LEPAS">BURUH HARIAN LEPAS</option>
+                                <option value="BURUH TANI/PERKEBUNAN">BURUH TANI/PERKEBUNAN</option>
+                                <option value="BURUH NELAYAN/PERIKANAN">BURUH NELAYAN/PERIKANAN</option>
+                                <option value="BURUH PETERNAKAN">BURUH PETERNAKAN</option>
+                                <option value="PEMBANTU RUMAH TANGGA">PEMBANTU RUMAH TANGGA</option>
+                                <option value="TUKANG CUKUR">TUKANG CUKUR</option>
+                                <option value="TUKANG LISTRIK">TUKANG LISTRIK</option>
+                                <option value="TUKANG BATU">TUKANG BATU</option>
+                                <option value="TUKANG KAYU">TUKANG KAYU</option>
+                                <option value="TUKANG SOL SEPATU">TUKANG SOL SEPATU</option>
+                                <option value="TUKANG LAS/PANDAI BESI">TUKANG LAS/PANDAI BESI</option>
+                                <option value="TUKANG JAHIT">TUKANG JAHIT</option>
+                                <option value="TUKANG GIGI">TUKANG GIGI</option>
+                                <option value="PENATA RIAS">PENATA RIAS</option>
+                                <option value="PENATA BUSANA">PENATA BUSANA</option>
+                                <option value="PENATA RAMBUT">PENATA RAMBUT</option>
+                                <option value="MEKANIK">MEKANIK</option>
+                                <option value="SENIMAN">SENIMAN</option>
+                                <option value="TABIB">TABIB</option>
+                                <option value="PARAJI">PARAJI</option>
+                                <option value="PERANCANG BUSANA">PERANCANG BUSANA</option>
+                                <option value="PENTERJEMAH">PENTERJEMAH</option>
+                                <option value="IMAM MASJID">IMAM MASJID</option>
+                                <option value="PENDETA">PENDETA</option>
+                                <option value="PASTOR">PASTOR</option>
+                                <option value="WARTAWAN">WARTAWAN</option>
+                                <option value="USTADZ/MUBALIGH">USTADZ/MUBALIGH</option>
+                                <option value="JURU MASAK">JURU MASAK</option>
+                                <option value="PROMOTOR ACARA">PROMOTOR ACARA</option>
+                                <option value="ANGGOTA DPR-RI">ANGGOTA DPR-RI</option>
+                                <option value="ANGGOTA DPD">ANGGOTA DPD</option>
+                                <option value="ANGGOTA BPK">ANGGOTA BPK</option>
+                                <option value="PRESIDEN">PRESIDEN</option>
+                                <option value="WAKIL PRESIDEN">WAKIL PRESIDEN</option>
+                                <option value="ANGGOTA MAHKAMAH KONSTITUSI">ANGGOTA MAHKAMAH KONSTITUSI</option>
+                                <option value="ANGGOTA KABINET KEMENTERIAN">ANGGOTA KABINET KEMENTERIAN</option>
+                                <option value="DUTA BESAR">DUTA BESAR</option>
+                                <option value="GUBERNUR">GUBERNUR</option>
+                                <option value="WAKIL GUBERNUR">WAKIL GUBERNUR</option>
+                                <option value="BUPATI">BUPATI</option>
+                                <option value="WAKIL BUPATI">WAKIL BUPATI</option>
+                                <option value="WALIKOTA">WALIKOTA</option>
+                                <option value="WAKIL WALIKOTA">WAKIL WALIKOTA</option>
+                                <option value="ANGGOTA DPRD PROVINSI">ANGGOTA DPRD PROVINSI</option>
+                                <option value="ANGGOTA DPRD KABUPATEN/KOTA">ANGGOTA DPRD KABUPATEN/KOTA</option>
+                                <option value="DOSEN">DOSEN</option>
+                                <option value="GURU">GURU</option>
+                                <option value="PILOT">PILOT</option>
+                                <option value="PENGACARA">PENGACARA</option>
+                                <option value="NOTARIS">NOTARIS</option>
+                                <option value="ARSITEK">ARSITEK</option>
+                                <option value="AKUNTAN">AKUNTAN</option>
+                                <option value="KONSULTAN">KONSULTAN</option>
+                                <option value="DOKTER">DOKTER</option>
+                                <option value="BIDAN">BIDAN</option>
+                                <option value="PERAWAT">PERAWAT</option>
+                                <option value="APOTEKER">APOTEKER</option>
+                                <option value="PSIKIATER/PSIKOLOG">PSIKIATER/PSIKOLOG</option>
+                                <option value="PENYIAR TELEVISI">PENYIAR TELEVISI</option>
+                                <option value="PENYIAR RADIO">PENYIAR RADIO</option>
+                                <option value="PELAUT">PELAUT</option>
+                                <option value="PENELITI">PENELITI</option>
+                                <option value="SOPIR">SOPIR</option>
+                                <option value="PIALANG">PIALANG</option>
+                                <option value="PARANORMAL">PARANORMAL</option>
+                                <option value="PEDAGANG">PEDAGANG</option>
+                                <option value="PERANGKAT DESA">PERANGKAT DESA</option>
+                                <option value="KEPALA DESA">KEPALA DESA</option>
+                                <option value="BIARAWATI">BIARAWATI</option>
+                                <option value="WIRASWASTA">WIRASWASTA</option>
                             </select>
                             @error('pekerjaan_ayah') <p class="text-xs text-rose-600 mt-1">{{ $message }}</p> @enderror
                         </div>
@@ -669,18 +968,153 @@
 
                         <div>
                             <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
+                                Status Ibu <span class="text-rose-500">*</span>
+                            </label>
+                            <div class="flex items-center space-x-6 mt-2">
+                                <label class="inline-flex items-center cursor-pointer">
+                                    <input type="radio" wire:model.defer="status_ibu" value="Hidup" class="w-4 h-4 text-indigo-600 border-slate-300 focus:ring-indigo-500">
+                                    <span class="ml-2 text-sm text-slate-700">Masih Hidup</span>
+                                </label>
+                                <label class="inline-flex items-center cursor-pointer">
+                                    <input type="radio" wire:model.defer="status_ibu" value="Wafat" class="w-4 h-4 text-rose-500 border-slate-300 focus:ring-rose-500">
+                                    <span class="ml-2 text-sm text-slate-700">Wafat</span>
+                                </label>
+                            </div>
+                            @error('status_ibu') <p class="text-xs text-rose-600 mt-1">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
+                                NIK Ibu (16 Digit)
+                            </label>
+                            <input type="text" wire:model.defer="nik_ibu" maxlength="16" placeholder="Sesuai KTP Ibu"
+                                   class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 bg-white @error('nik_ibu') border-rose-500 @enderror">
+                            @error('nik_ibu') <p class="text-xs text-rose-600 mt-1">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
+                                Tahun Lahir Ibu
+                            </label>
+                            <input type="number" wire:model.defer="tahun_lahir_ibu" min="1930" max="{{ date('Y') - 15 }}" placeholder="Contoh: 1978"
+                                   class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 bg-white @error('tahun_lahir_ibu') border-rose-500 @enderror">
+                            @error('tahun_lahir_ibu') <p class="text-xs text-rose-600 mt-1">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
+                                Pendidikan Terakhir Ibu
+                            </label>
+                            <select wire:model.defer="pendidikan_ibu"
+                                    class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 bg-white @error('pendidikan_ibu') border-rose-500 @enderror">
+                                <option value="">-- Pilih Pendidikan --</option>
+                                <option value="Tidak Sekolah">Tidak Sekolah</option>
+                                <option value="SD/MI">SD / MI</option>
+                                <option value="SMP/MTs">SMP / MTs</option>
+                                <option value="SMA/MA/SMK">SMA / MA / SMK</option>
+                                <option value="D1/D2/D3">D1 / D2 / D3</option>
+                                <option value="S1/D4">S1 / D4</option>
+                                <option value="S2">S2</option>
+                                <option value="S3">S3</option>
+                            </select>
+                            @error('pendidikan_ibu') <p class="text-xs text-rose-600 mt-1">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
                                 Pekerjaan Ibu <span class="text-rose-500">*</span>
                             </label>
                             <select wire:model.defer="pekerjaan_ibu"
                                     class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 bg-white @error('pekerjaan_ibu') border-rose-500 @enderror">
                                 <option value="">-- Pilih Pekerjaan --</option>
-                                <option value="Ibu Rumah Tangga (IRT)">Ibu Rumah Tangga (IRT)</option>
-                                <option value="PNS / TNI / POLRI">PNS / TNI / POLRI</option>
-                                <option value="Karyawan Swasta">Karyawan Swasta</option>
-                                <option value="Wiraswasta / Pengusaha">Wiraswasta / Pengusaha</option>
-                                <option value="Pedagang">Pedagang</option>
-                                <option value="Petani / Buruh">Petani / Buruh</option>
-                                <option value="Lainnya">Lainnya</option>
+                                <option value="BELUM/TIDAK BEKERJA">BELUM/TIDAK BEKERJA</option>
+                                <option value="MENGURUS RUMAH TANGGA">MENGURUS RUMAH TANGGA</option>
+                                <option value="PELAJAR/MAHASISWA">PELAJAR/MAHASISWA</option>
+                                <option value="PENSIUNAN">PENSIUNAN</option>
+                                <option value="PEGAWAI NEGERI SIPIL (PNS)">PEGAWAI NEGERI SIPIL (PNS)</option>
+                                <option value="TENTARA NASIONAL INDONESIA (TNI)">TENTARA NASIONAL INDONESIA (TNI)</option>
+                                <option value="KEPOLISIAN RI (POLRI)">KEPOLISIAN RI (POLRI)</option>
+                                <option value="PERDAGANGAN">PERDAGANGAN</option>
+                                <option value="PETANI/PERKEBUNAN">PETANI/PERKEBUNAN</option>
+                                <option value="PETERNAK">PETERNAK</option>
+                                <option value="NELAYAN/PERIKANAN">NELAYAN/PERIKANAN</option>
+                                <option value="INDUSTRI">INDUSTRI</option>
+                                <option value="KONSTRUKSI">KONSTRUKSI</option>
+                                <option value="TRANSPORTASI">TRANSPORTASI</option>
+                                <option value="KARYAWAN SWASTA">KARYAWAN SWASTA</option>
+                                <option value="KARYAWAN BUMN">KARYAWAN BUMN</option>
+                                <option value="KARYAWAN BUMD">KARYAWAN BUMD</option>
+                                <option value="KARYAWAN HONORER">KARYAWAN HONORER</option>
+                                <option value="BURUH HARIAN LEPAS">BURUH HARIAN LEPAS</option>
+                                <option value="BURUH TANI/PERKEBUNAN">BURUH TANI/PERKEBUNAN</option>
+                                <option value="BURUH NELAYAN/PERIKANAN">BURUH NELAYAN/PERIKANAN</option>
+                                <option value="BURUH PETERNAKAN">BURUH PETERNAKAN</option>
+                                <option value="PEMBANTU RUMAH TANGGA">PEMBANTU RUMAH TANGGA</option>
+                                <option value="TUKANG CUKUR">TUKANG CUKUR</option>
+                                <option value="TUKANG LISTRIK">TUKANG LISTRIK</option>
+                                <option value="TUKANG BATU">TUKANG BATU</option>
+                                <option value="TUKANG KAYU">TUKANG KAYU</option>
+                                <option value="TUKANG SOL SEPATU">TUKANG SOL SEPATU</option>
+                                <option value="TUKANG LAS/PANDAI BESI">TUKANG LAS/PANDAI BESI</option>
+                                <option value="TUKANG JAHIT">TUKANG JAHIT</option>
+                                <option value="TUKANG GIGI">TUKANG GIGI</option>
+                                <option value="PENATA RIAS">PENATA RIAS</option>
+                                <option value="PENATA BUSANA">PENATA BUSANA</option>
+                                <option value="PENATA RAMBUT">PENATA RAMBUT</option>
+                                <option value="MEKANIK">MEKANIK</option>
+                                <option value="SENIMAN">SENIMAN</option>
+                                <option value="TABIB">TABIB</option>
+                                <option value="PARAJI">PARAJI</option>
+                                <option value="PERANCANG BUSANA">PERANCANG BUSANA</option>
+                                <option value="PENTERJEMAH">PENTERJEMAH</option>
+                                <option value="IMAM MASJID">IMAM MASJID</option>
+                                <option value="PENDETA">PENDETA</option>
+                                <option value="PASTOR">PASTOR</option>
+                                <option value="WARTAWAN">WARTAWAN</option>
+                                <option value="USTADZ/MUBALIGH">USTADZ/MUBALIGH</option>
+                                <option value="JURU MASAK">JURU MASAK</option>
+                                <option value="PROMOTOR ACARA">PROMOTOR ACARA</option>
+                                <option value="ANGGOTA DPR-RI">ANGGOTA DPR-RI</option>
+                                <option value="ANGGOTA DPD">ANGGOTA DPD</option>
+                                <option value="ANGGOTA BPK">ANGGOTA BPK</option>
+                                <option value="PRESIDEN">PRESIDEN</option>
+                                <option value="WAKIL PRESIDEN">WAKIL PRESIDEN</option>
+                                <option value="ANGGOTA MAHKAMAH KONSTITUSI">ANGGOTA MAHKAMAH KONSTITUSI</option>
+                                <option value="ANGGOTA KABINET KEMENTERIAN">ANGGOTA KABINET KEMENTERIAN</option>
+                                <option value="DUTA BESAR">DUTA BESAR</option>
+                                <option value="GUBERNUR">GUBERNUR</option>
+                                <option value="WAKIL GUBERNUR">WAKIL GUBERNUR</option>
+                                <option value="BUPATI">BUPATI</option>
+                                <option value="WAKIL BUPATI">WAKIL BUPATI</option>
+                                <option value="WALIKOTA">WALIKOTA</option>
+                                <option value="WAKIL WALIKOTA">WAKIL WALIKOTA</option>
+                                <option value="ANGGOTA DPRD PROVINSI">ANGGOTA DPRD PROVINSI</option>
+                                <option value="ANGGOTA DPRD KABUPATEN/KOTA">ANGGOTA DPRD KABUPATEN/KOTA</option>
+                                <option value="DOSEN">DOSEN</option>
+                                <option value="GURU">GURU</option>
+                                <option value="PILOT">PILOT</option>
+                                <option value="PENGACARA">PENGACARA</option>
+                                <option value="NOTARIS">NOTARIS</option>
+                                <option value="ARSITEK">ARSITEK</option>
+                                <option value="AKUNTAN">AKUNTAN</option>
+                                <option value="KONSULTAN">KONSULTAN</option>
+                                <option value="DOKTER">DOKTER</option>
+                                <option value="BIDAN">BIDAN</option>
+                                <option value="PERAWAT">PERAWAT</option>
+                                <option value="APOTEKER">APOTEKER</option>
+                                <option value="PSIKIATER/PSIKOLOG">PSIKIATER/PSIKOLOG</option>
+                                <option value="PENYIAR TELEVISI">PENYIAR TELEVISI</option>
+                                <option value="PENYIAR RADIO">PENYIAR RADIO</option>
+                                <option value="PELAUT">PELAUT</option>
+                                <option value="PENELITI">PENELITI</option>
+                                <option value="SOPIR">SOPIR</option>
+                                <option value="PIALANG">PIALANG</option>
+                                <option value="PARANORMAL">PARANORMAL</option>
+                                <option value="PEDAGANG">PEDAGANG</option>
+                                <option value="PERANGKAT DESA">PERANGKAT DESA</option>
+                                <option value="KEPALA DESA">KEPALA DESA</option>
+                                <option value="BIARAWATI">BIARAWATI</option>
+                                <option value="WIRASWASTA">WIRASWASTA</option>
                             </select>
                             @error('pekerjaan_ibu') <p class="text-xs text-rose-600 mt-1">{{ $message }}</p> @enderror
                         </div>
@@ -717,13 +1151,148 @@
                     </div>
                 </div>
 
+                {{-- Data Wali (Opsional) --}}
+                <div x-data="{ tampilWali: @js(!empty($nama_wali)) }">
+                    <button type="button" @click="tampilWali = !tampilWali"
+                            class="w-full flex items-center justify-between p-4 rounded-2xl border-2 border-dashed border-slate-300 hover:border-indigo-400 hover:bg-indigo-50/30 transition group">
+                        <div class="flex items-center space-x-3">
+                            <span class="w-2 h-2 rounded-full bg-slate-400 group-hover:bg-indigo-500 transition"></span>
+                            <span class="text-xs font-bold text-slate-700 uppercase tracking-wider group-hover:text-indigo-800 transition">
+                                Data Wali
+                            </span>
+                            <span class="text-[10px] font-semibold text-amber-700 bg-amber-100 border border-amber-200 px-2 py-0.5 rounded-full">
+                                Opsional
+                            </span>
+                        </div>
+                        <svg :class="tampilWali ? 'rotate-180' : ''" class="w-4 h-4 text-slate-400 group-hover:text-indigo-600 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+
+                    <div x-show="tampilWali" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" class="mt-3">
+                        <div class="p-5 rounded-2xl bg-amber-50/40 border border-amber-100 space-y-4">
+                            <p class="text-[11px] text-amber-700">Isi data wali jika wali berbeda dengan ayah/ibu kandung, atau jika siswa tinggal bersama wali.</p>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Nama Lengkap Wali</label>
+                                    <input type="text" wire:model.defer="nama_wali" placeholder="Nama lengkap sesuai KTP"
+                                           class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 bg-white @error('nama_wali') border-rose-500 @enderror">
+                                    @error('nama_wali') <p class="text-xs text-rose-600 mt-1">{{ $message }}</p> @enderror
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Status Wali</label>
+                                    <div class="flex items-center space-x-6 mt-2">
+                                        <label class="inline-flex items-center cursor-pointer">
+                                            <input type="radio" wire:model.defer="status_wali" value="Hidup" class="w-4 h-4 text-indigo-600 border-slate-300 focus:ring-indigo-500">
+                                            <span class="ml-2 text-sm text-slate-700">Masih Hidup</span>
+                                        </label>
+                                        <label class="inline-flex items-center cursor-pointer">
+                                            <input type="radio" wire:model.defer="status_wali" value="Wafat" class="w-4 h-4 text-rose-500 border-slate-300 focus:ring-rose-500">
+                                            <span class="ml-2 text-sm text-slate-700">Wafat</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">NIK Wali (16 Digit)</label>
+                                    <input type="text" wire:model.defer="nik_wali" maxlength="16" placeholder="Sesuai KTP Wali"
+                                           class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 bg-white @error('nik_wali') border-rose-500 @enderror">
+                                    @error('nik_wali') <p class="text-xs text-rose-600 mt-1">{{ $message }}</p> @enderror
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Tahun Lahir Wali</label>
+                                    <input type="number" wire:model.defer="tahun_lahir_wali" min="1930" max="{{ date('Y') - 15 }}" placeholder="Contoh: 1970"
+                                           class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 bg-white @error('tahun_lahir_wali') border-rose-500 @enderror">
+                                    @error('tahun_lahir_wali') <p class="text-xs text-rose-600 mt-1">{{ $message }}</p> @enderror
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Pendidikan Terakhir Wali</label>
+                                    <select wire:model.defer="pendidikan_wali"
+                                            class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 bg-white @error('pendidikan_wali') border-rose-500 @enderror">
+                                        <option value="">-- Pilih Pendidikan --</option>
+                                        <option value="Tidak Sekolah">Tidak Sekolah</option>
+                                        <option value="SD/MI">SD / MI</option>
+                                        <option value="SMP/MTs">SMP / MTs</option>
+                                        <option value="SMA/MA/SMK">SMA / MA / SMK</option>
+                                        <option value="D1/D2/D3">D1 / D2 / D3</option>
+                                        <option value="S1/D4">S1 / D4</option>
+                                        <option value="S2">S2</option>
+                                        <option value="S3">S3</option>
+                                    </select>
+                                    @error('pendidikan_wali') <p class="text-xs text-rose-600 mt-1">{{ $message }}</p> @enderror
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Pekerjaan Wali</label>
+                                    <select wire:model.defer="pekerjaan_wali"
+                                            class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 bg-white @error('pekerjaan_wali') border-rose-500 @enderror">
+                                        <option value="">-- Pilih Pekerjaan --</option>
+                                        <option value="BELUM/TIDAK BEKERJA">BELUM/TIDAK BEKERJA</option>
+                                        <option value="MENGURUS RUMAH TANGGA">MENGURUS RUMAH TANGGA</option>
+                                        <option value="PENSIUNAN">PENSIUNAN</option>
+                                        <option value="PEGAWAI NEGERI SIPIL (PNS)">PEGAWAI NEGERI SIPIL (PNS)</option>
+                                        <option value="TENTARA NASIONAL INDONESIA (TNI)">TENTARA NASIONAL INDONESIA (TNI)</option>
+                                        <option value="KEPOLISIAN RI (POLRI)">KEPOLISIAN RI (POLRI)</option>
+                                        <option value="KARYAWAN SWASTA">KARYAWAN SWASTA</option>
+                                        <option value="KARYAWAN BUMN">KARYAWAN BUMN</option>
+                                        <option value="KARYAWAN HONORER">KARYAWAN HONORER</option>
+                                        <option value="BURUH HARIAN LEPAS">BURUH HARIAN LEPAS</option>
+                                        <option value="PETANI/PERKEBUNAN">PETANI/PERKEBUNAN</option>
+                                        <option value="NELAYAN/PERIKANAN">NELAYAN/PERIKANAN</option>
+                                        <option value="PEDAGANG">PEDAGANG</option>
+                                        <option value="WIRASWASTA">WIRASWASTA</option>
+                                        <option value="GURU">GURU</option>
+                                        <option value="DOSEN">DOSEN</option>
+                                        <option value="DOKTER">DOKTER</option>
+                                        <option value="PERAWAT">PERAWAT</option>
+                                        <option value="SOPIR">SOPIR</option>
+                                        <option value="PERANGKAT DESA">PERANGKAT DESA</option>
+                                    </select>
+                                    @error('pekerjaan_wali') <p class="text-xs text-rose-600 mt-1">{{ $message }}</p> @enderror
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Penghasilan Bulanan Wali</label>
+                                    <div class="relative" x-data="{
+                                        rawVal: @entangle('penghasilan_wali'),
+                                        displayVal: '',
+                                        init() { this.formatDisplay(); },
+                                        formatDisplay() {
+                                            let num = parseInt(this.rawVal || 0);
+                                            this.displayVal = num > 0 ? 'Rp ' + new Intl.NumberFormat('id-ID').format(num) : '';
+                                        },
+                                        onInput(e) {
+                                            let digits = e.target.value.replace(/\D/g, '');
+                                            let num = digits ? parseInt(digits) : 0;
+                                            this.rawVal = num;
+                                            this.displayVal = num > 0 ? 'Rp ' + new Intl.NumberFormat('id-ID').format(num) : '';
+                                        }
+                                    }">
+                                        <input type="text" x-model="displayVal" x-on:input="onInput($event)" placeholder="Rp 0"
+                                               class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 bg-white font-mono font-medium">
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">No. WhatsApp / HP Wali</label>
+                                    <input type="text" wire:model.defer="hp_wali" placeholder="Contoh: 081298765432"
+                                           class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 bg-white">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="flex justify-between items-center pt-4 border-t border-slate-100">
                     <button type="button" wire:click="goToStep(3)" class="text-xs font-bold text-slate-500 hover:text-slate-800">
                         &larr; Kembali ke Biodata Siswa
                     </button>
                     <button type="submit" wire:loading.attr="disabled"
                             class="inline-flex items-center px-6 py-3 rounded-xl font-bold text-white bg-indigo-600 hover:bg-indigo-700 shadow-md shadow-indigo-100 transition">
-                        <span wire:loading.remove wire:target="submitStep4">Lanjut ke Nilai Rapor & Prestasi &rarr;</span>
+                        <span wire:loading.remove wire:target="submitStep4">Lanjut ke Nilai Rapor &amp; Prestasi &rarr;</span>
                         <span wire:loading wire:target="submitStep4">Menyimpan data orang tua...</span>
                     </button>
                 </div>

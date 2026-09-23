@@ -32,10 +32,10 @@ class CalonSiswaSeeder extends Seeder
                     'hp_ayah' => '+6281298765432',     // Otomatis dinormalisasi menjadi 6281298765432
                     'hp_ibu' => '081311223344',        // Otomatis dinormalisasi menjadi 6281311223344
                     'nama_ayah' => 'Bambang Sutrisno',
-                    'pekerjaan_ayah' => 'Buruh Pabrik / Karyawan Swasta',
+                    'pekerjaan_ayah' => 'KARYAWAN SWASTA',
                     'penghasilan_ayah' => 2200000,
                     'nama_ibu' => 'Endang Sulastri',
-                    'pekerjaan_ibu' => 'Ibu Rumah Tangga',
+                    'pekerjaan_ibu' => 'MENGURUS RUMAH TANGGA',
                     'penghasilan_ibu' => 0,
                     'jumlah_tanggungan' => 3,
                     'rata_rata_raport' => 87.50,
