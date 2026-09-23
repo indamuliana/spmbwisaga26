@@ -1,7 +1,10 @@
 <?php
 
+use App\Enums\StatusKelulusan;
+use App\Enums\StatusPendaftaran;
 use App\Enums\UserRole;
 use App\Http\Controllers\DokumenKesepahamanController;
+use App\Models\CalonSiswa;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -97,11 +100,35 @@ Route::middleware(['auth', 'role:admin'])
     ->name('admin.')
     ->group(function () {
         Route::get('/dashboard', function () {
-            return view('admin.dashboard');
+            // Rekap per tahap pendaftaran
+            $rekapTahap = collect(StatusPendaftaran::cases())->map(function ($status) {
+                return [
+                    'label'  => $status->label(),
+                    'value'  => $status->value,
+                    'badge'  => $status->badgeClasses(),
+                    'jumlah' => CalonSiswa::where('status_pendaftaran', $status->value)->count(),
+                ];
+            });
+
+            // Stats ringkas
+            $stats = [
+                'total'       => CalonSiswa::count(),
+                'diterima'    => CalonSiswa::where('status_kelulusan', StatusKelulusan::DITERIMA->value)->count(),
+                'cadangan'    => CalonSiswa::where('status_kelulusan', StatusKelulusan::CADANGAN->value)->count(),
+                'ditolak'     => CalonSiswa::where('status_kelulusan', StatusKelulusan::DITOLAK->value)->count(),
+                'pengguna'    => User::count(),
+            ];
+
+            // Seluruh pendaftar
+            $pendaftars = CalonSiswa::with(['jurusan', 'user'])
+                ->latest()
+                ->get();
+
+            return view('admin.dashboard', compact('rekapTahap', 'stats', 'pendaftars'));
         })->name('dashboard');
 
         // Modul Master Data & Operasional PPDB
-        Route::get('/users', fn () => 'Halaman Manajemen Pengguna (Admin)')->name('users');
+        Route::get('/users', \App\Livewire\Admin\ManajemenPengguna::class)->name('users');
         Route::get('/gelombang', fn () => 'Halaman Master Gelombang Pendaftaran')->name('gelombang');
         Route::get('/jurusan', fn () => 'Halaman Master Jurusan / Peminatan')->name('jurusan');
         Route::get('/penugasan-wawancara', fn () => view('admin.penugasan-wawancara'))->name('penugasan-wawancara');
@@ -119,7 +146,33 @@ Route::middleware(['auth', 'role:bendahara'])
     ->name('bendahara.')
     ->group(function () {
         Route::get('/dashboard', function () {
-            return view('bendahara.dashboard');
+            // Rekap per tahap
+            $rekapTahap = collect(StatusPendaftaran::cases())->map(function ($status) {
+                return [
+                    'label'  => $status->label(),
+                    'value'  => $status->value,
+                    'badge'  => $status->badgeClasses(),
+                    'jumlah' => CalonSiswa::where('status_pendaftaran', $status->value)->count(),
+                ];
+            });
+
+            // Stats keuangan
+            $stats = [
+                'total'               => CalonSiswa::count(),
+                'menunggu_verifikasi' => CalonSiswa::where('status_pendaftaran', StatusPendaftaran::BAYAR_SELEKSI->value)
+                                                   ->whereNotNull('bukti_bayar_seleksi')->count(),
+                'sudah_bayar'         => CalonSiswa::where('status_pendaftaran', '!=', StatusPendaftaran::BAYAR_SELEKSI->value)
+                                                   ->where('status_pendaftaran', '!=', StatusPendaftaran::REGISTER->value)->count(),
+                'belum_bayar'         => CalonSiswa::where('status_pendaftaran', StatusPendaftaran::BAYAR_SELEKSI->value)
+                                                   ->whereNull('bukti_bayar_seleksi')->count(),
+            ];
+
+            // Seluruh pendaftar
+            $pendaftars = CalonSiswa::with(['jurusan', 'user'])
+                ->latest()
+                ->get();
+
+            return view('bendahara.dashboard', compact('rekapTahap', 'stats', 'pendaftars'));
         })->name('dashboard');
 
         // Modul Pembayaran
