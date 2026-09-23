@@ -93,6 +93,7 @@ class CalonSiswa extends Model
         'golongan_darah',
         'hobi',
         'cita_cita',
+        'gelombang_id',
     ];
 
     /**
@@ -190,6 +191,11 @@ class CalonSiswa extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function gelombang(): BelongsTo
+    {
+        return $this->belongsTo(Gelombang::class, 'gelombang_id');
     }
 
     public function program(): BelongsTo

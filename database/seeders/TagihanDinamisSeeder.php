@@ -15,37 +15,84 @@ class TagihanDinamisSeeder extends Seeder
         $reguler = Program::where('nama_program', 'Reguler')->first();
         $unggulan = Program::where('nama_program', 'Unggulan')->first();
 
+        $gelombang1 = \App\Models\Gelombang::where('nama', 'like', '%1%')->first();
+        $gelombang2 = \App\Models\Gelombang::where('nama', 'like', '%2%')->first();
+        $gelombang3 = \App\Models\Gelombang::where('nama', 'like', '%3%')->first();
+
         // 1. Komponen Biaya (Universal vs Program Tertentu)
         $biayaList = [
-            // Seleksi berlaku universal (program_id = null, jurusan_id = null)
+            // Seleksi berlaku universal (program_id = null, jurusan_id = null, gelombang_id = null)
             [
                 'nama_biaya' => 'Biaya Seleksi & Tes Masuk',
                 'program_id' => null,
                 'jurusan_id' => null,
+                'gelombang_id' => null,
                 'nominal' => 250000,
                 'keterangan' => 'Wajib untuk seluruh calon siswa pendaftar PPDB.',
             ],
-            // DSP Reguler
+            
+            // DSP Reguler Gelombang 1
             [
-                'nama_biaya' => 'DSP (Dana Sumbangan Pendidikan) Reguler',
+                'nama_biaya' => 'DSP Reguler (Gelombang 1)',
                 'program_id' => $reguler?->id,
                 'jurusan_id' => null,
-                'nominal' => 3500000,
-                'keterangan' => 'Uang gedung dan sarana prasarana untuk Program Reguler.',
+                'gelombang_id' => $gelombang1?->id,
+                'nominal' => 3000000, // Diskon 500k dari Gelombang 1
+                'keterangan' => 'DSP Reguler Khusus Pendaftar Gelombang 1 (Early Bird).',
             ],
-            // DSP Unggulan
+            // DSP Reguler Gelombang 2
             [
-                'nama_biaya' => 'DSP (Dana Sumbangan Pendidikan) Unggulan',
+                'nama_biaya' => 'DSP Reguler (Gelombang 2)',
+                'program_id' => $reguler?->id,
+                'jurusan_id' => null,
+                'gelombang_id' => $gelombang2?->id,
+                'nominal' => 3500000,
+                'keterangan' => 'DSP Reguler Pendaftar Gelombang 2.',
+            ],
+            // DSP Reguler Gelombang 3
+            [
+                'nama_biaya' => 'DSP Reguler (Gelombang 3)',
+                'program_id' => $reguler?->id,
+                'jurusan_id' => null,
+                'gelombang_id' => $gelombang3?->id,
+                'nominal' => 4000000,
+                'keterangan' => 'DSP Reguler Pendaftar Gelombang 3.',
+            ],
+
+            // DSP Unggulan Gelombang 1
+            [
+                'nama_biaya' => 'DSP Unggulan (Gelombang 1)',
                 'program_id' => $unggulan?->id,
                 'jurusan_id' => null,
-                'nominal' => 5000000,
-                'keterangan' => 'Uang gedung, laboratorium khusus dan fasilitas Program Unggulan.',
+                'gelombang_id' => $gelombang1?->id,
+                'nominal' => 4500000,
+                'keterangan' => 'DSP Unggulan Khusus Pendaftar Gelombang 1 (Early Bird).',
             ],
+            // DSP Unggulan Gelombang 2
+            [
+                'nama_biaya' => 'DSP Unggulan (Gelombang 2)',
+                'program_id' => $unggulan?->id,
+                'jurusan_id' => null,
+                'gelombang_id' => $gelombang2?->id,
+                'nominal' => 5000000,
+                'keterangan' => 'DSP Unggulan Pendaftar Gelombang 2.',
+            ],
+            // DSP Unggulan Gelombang 3
+            [
+                'nama_biaya' => 'DSP Unggulan (Gelombang 3)',
+                'program_id' => $unggulan?->id,
+                'jurusan_id' => null,
+                'gelombang_id' => $gelombang3?->id,
+                'nominal' => 5500000,
+                'keterangan' => 'DSP Unggulan Pendaftar Gelombang 3.',
+            ],
+
             // SPP Bulan Pertama Reguler
             [
                 'nama_biaya' => 'SPP Bulan Pertama (Reguler)',
                 'program_id' => $reguler?->id,
                 'jurusan_id' => null,
+                'gelombang_id' => null,
                 'nominal' => 350000,
                 'keterangan' => 'Iuran operasional bulanan pertama.',
             ],
@@ -54,6 +101,7 @@ class TagihanDinamisSeeder extends Seeder
                 'nama_biaya' => 'SPP Bulan Pertama (Unggulan)',
                 'program_id' => $unggulan?->id,
                 'jurusan_id' => null,
+                'gelombang_id' => null,
                 'nominal' => 600000,
                 'keterangan' => 'Iuran operasional bulanan kelas unggulan & sertifikasi.',
             ],
@@ -62,6 +110,7 @@ class TagihanDinamisSeeder extends Seeder
                 'nama_biaya' => 'Biaya Asrama & Makan (Bulan Pertama)',
                 'program_id' => $unggulan?->id,
                 'jurusan_id' => null,
+                'gelombang_id' => null,
                 'nominal' => 1200000,
                 'keterangan' => 'Khusus Program Unggulan Berasrama (Boarding School).',
             ],
@@ -72,6 +121,7 @@ class TagihanDinamisSeeder extends Seeder
                 [
                     'nama_biaya' => $b['nama_biaya'],
                     'program_id' => $b['program_id'],
+                    'gelombang_id' => $b['gelombang_id'] ?? null,
                 ],
                 [
                     'jurusan_id' => $b['jurusan_id'],

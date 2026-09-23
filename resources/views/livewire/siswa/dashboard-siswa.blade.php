@@ -5,7 +5,9 @@
         <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
                 <h1 class="text-2xl font-bold text-slate-900">Selamat datang, {{ $calonSiswa->nama_lengkap }}!</h1>
-                <p class="text-slate-500 mt-1">Portal Pendaftaran Peserta Didik Baru SMK Wikrama 1 Garut</p>
+                <p class="text-slate-500 mt-1">
+                    Portal Pendaftaran Peserta Didik Baru SMK Wikrama 1 Garut &bull; Pilihan Program: <strong class="font-bold text-slate-800">{{ $calonSiswa->program?->nama_program ?? '-' }}</strong>
+                </p>
             </div>
             <div class="flex flex-wrap items-center gap-3">
                 <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800">

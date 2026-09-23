@@ -17,6 +17,7 @@ class KomponenBiaya extends Model
         'nama_biaya',
         'program_id',
         'jurusan_id',
+        'gelombang_id',
         'nominal',
         'is_active',
         'keterangan',
@@ -40,6 +41,11 @@ class KomponenBiaya extends Model
         return $this->belongsTo(Jurusan::class, 'jurusan_id');
     }
 
+    public function gelombang(): BelongsTo
+    {
+        return $this->belongsTo(Gelombang::class, 'gelombang_id');
+    }
+
     // --- Query Scopes ---
 
     public function scopeActive(Builder $query): Builder
@@ -53,9 +59,9 @@ class KomponenBiaya extends Model
     }
 
     /**
-     * Mengambil biaya yang berlaku untuk program dan jurusan tertentu (termasuk biaya universal).
+     * Mengambil biaya yang berlaku untuk program, jurusan, dan gelombang tertentu (termasuk biaya universal).
      */
-    public function scopeForProgramAndJurusan(Builder $query, ?int $programId = null, ?int $jurusanId = null): Builder
+    public function scopeForProgramJurusanAndGelombang(Builder $query, ?int $programId = null, ?int $jurusanId = null, ?int $gelombangId = null): Builder
     {
         return $query->where(function ($q) use ($programId) {
             $q->whereNull('program_id');
@@ -66,6 +72,11 @@ class KomponenBiaya extends Model
             $q->whereNull('jurusan_id');
             if ($jurusanId) {
                 $q->orWhere('jurusan_id', $jurusanId);
+            }
+        })->where(function ($q) use ($gelombangId) {
+            $q->whereNull('gelombang_id');
+            if ($gelombangId) {
+                $q->orWhere('gelombang_id', $gelombangId);
             }
         });
     }

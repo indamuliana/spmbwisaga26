@@ -7,6 +7,7 @@ use App\Enums\UserRole;
 use App\Models\CalonSiswa;
 use App\Models\Jurusan;
 use App\Models\KomponenBiaya;
+use App\Models\Gelombang;
 use App\Models\Program;
 use App\Models\User;
 use App\Models\Wilayah;
@@ -257,6 +258,12 @@ class StudentRegistrationStepper extends Component
             'hp_siswa.required' => 'Nomor WhatsApp/HP siswa wajib diisi.',
         ]);
 
+        $gelombang = Gelombang::currentlyOpen()->first();
+        if (!$gelombang) {
+            $this->addError('general', 'Pendaftaran ditutup: Tidak ada gelombang pendaftaran yang aktif saat ini.');
+            return;
+        }
+
         if (Auth::check() && Auth::user()->isSiswa()) {
             $user = Auth::user();
             $user->update([
@@ -271,6 +278,7 @@ class StudentRegistrationStepper extends Component
                     'nisn' => $this->nisn,
                     'nama_lengkap' => $this->nama_lengkap,
                     'program_id' => $this->program_id,
+                    'gelombang_id' => $gelombang->id,
                     'referensi_promotor' => $this->referensi_promotor,
                     'detail_promotor' => $this->detail_promotor,
                     'hp_siswa' => $this->hp_siswa,
@@ -294,6 +302,7 @@ class StudentRegistrationStepper extends Component
                 'nama_lengkap' => $this->nama_lengkap,
                 'asal_sekolah' => '-',
                 'program_id' => $this->program_id,
+                'gelombang_id' => $gelombang->id,
                 'referensi_promotor' => $this->referensi_promotor,
                 'detail_promotor' => $this->detail_promotor,
                 'hp_siswa' => $this->hp_siswa,
